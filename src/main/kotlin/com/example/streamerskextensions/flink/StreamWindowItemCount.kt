@@ -1,4 +1,4 @@
-package com.example.streamersk
+package com.example.streamerskextensions.flink
 
 import org.apache.commons.lang3.StringUtils.isNotBlank
 import org.apache.flink.api.common.serialization.SimpleStringSchema

@@ -1,4 +1,4 @@
-package com.example.streamersk
+package com.example.streamerskextensions.flink
 
 import org.apache.flink.api.common.functions.AggregateFunction
 import org.apache.flink.api.java.tuple.Tuple2
