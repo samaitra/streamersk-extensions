@@ -55,6 +55,11 @@
         </dependency>
         <dependency>
             <groupId>org.apache.ignite</groupId>
+            <artifactId>ignite-kafka-ext</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ignite</groupId>
             <artifactId>ignite-log4j</artifactId>
             <version>2.8.1</version>
         </dependency>
@@ -68,6 +73,8 @@
             <artifactId>spring-beans</artifactId>
             <version>4.3.0.RELEASE</version>
         </dependency>
+
+
 
         <dependency>
             <groupId>junit</groupId>
