@@ -4,7 +4,7 @@ A realtime data streaming application to access, aggregate and format events
 
 ### Architecture
 
-![Stream processing topology](https://github.com/samaitra/streamersk/raw/master/resources/streamersk-extensions.png) 
+![Stream processing topology](https://github.com/samaitra/streamersk/raw/main/resources/streamersk-extensions.png) 
 
 ### Setup: Download and Start Flink
 
@@ -25,7 +25,7 @@ $ ./bin/start-cluster.sh  # Start Flink
 ```
 Check the Dispatcher’s web frontend at http://localhost:8081 and make sure everything is up and running. The web frontend should report a single available TaskManager instance.
 
-![Flink Job Execution](https://github.com/samaitra/streamersk/raw/master/resources/flink_job.png) 
+![Flink Job Execution](https://github.com/samaitra/streamersk/raw/main/resources/flink_job.png) 
 
 Dispatcher: Overview
 
@@ -90,7 +90,7 @@ $ mvn clean package
 
 ### Submit the Flink program :
 ```
-$ ~/flink-1.9.1/bin/flink run ./target/streamersk-1.0-SNAPSHOT.jar src/main/resources/application.properties
+$ ~/flink-1.9.1/bin/flink run ./target/streamersk-extensions-1.0.0-SNAPSHOT.jar src/main/resources/application.properties
 ```
 
 ### produce something into the topic (write something and hit enter)
@@ -165,7 +165,7 @@ Steps 1 - 4 should be executed once.
 
 4. In browser open: http://localhost:9000
 
-![Ignite Web Console](https://github.com/samaitra/streamersk/raw/master/resources/ignite_web_console.png) 
+![Ignite Web Console](https://github.com/samaitra/streamersk/raw/main/resources/ignite_web_console.png) 
 
 
 ### To stop Flink when you’re done type:
