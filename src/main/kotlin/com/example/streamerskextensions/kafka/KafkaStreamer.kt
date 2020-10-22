@@ -8,6 +8,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 import java.util.*
 import java.util.concurrent.TimeoutException
+import kotlin.collections.HashMap
 
 private const val TOPIC = "mytopic"
 private const val DEFAULT_CACHE_NAME = "testCache"
@@ -27,18 +28,18 @@ fun main() {
 @Throws(TimeoutException::class, InterruptedException::class)
 private fun consumerStream(topic: String) {
     var kafkaStmr: KafkaStreamer<String?, String?>? = null
-    val ignite = Ignition.start("examples/config/example-ignite.xml")
+    val ignite = Ignition.start("src/main/resources/ignite-config.xml")
+
+    // Get the cache.
+    ignite.getOrCreateCache<String, String>(DEFAULT_CACHE_NAME)
 
     try {
         ignite.dataStreamer<String, String>(DEFAULT_CACHE_NAME).use { stmr ->
             stmr.allowOverwrite(true)
-            stmr.autoFlushFrequency(10)
+            stmr.autoFlushFrequency(1)
 
             // Configure Kafka streamer.
             kafkaStmr = KafkaStreamer()
-
-            // Get the cache.
-            val cache = ignite.cache<String, String>(DEFAULT_CACHE_NAME)
 
             // Set Ignite instance.
             kafkaStmr?.setIgnite(ignite)
@@ -50,15 +51,15 @@ private fun consumerStream(topic: String) {
             kafkaStmr?.setTopic(Arrays.asList(topic))
 
             // Set the number of threads.
-            kafkaStmr?.setThreads(4)
+            kafkaStmr?.setThreads(1)
 
             // Set the consumer configuration.
             kafkaStmr?.setConsumerConfig(
                     createDefaultConsumerConfig("localhost:9092", "groupX"))
             kafkaStmr?.setMultipleTupleExtractor { record ->
-                val entries: MutableMap<String?, String?> = HashMap()
+                var entries: HashMap<String?, String?> = HashMap()
                 try {
-                    val key = record.key() as String
+                    val key = UUID.randomUUID().toString()
                     val value = record.value() as String
                     entries[key] = value
                 } catch (ex: Exception) {
