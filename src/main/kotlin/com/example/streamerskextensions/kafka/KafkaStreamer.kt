@@ -4,7 +4,6 @@ import org.apache.ignite.Ignition
 import org.apache.ignite.internal.util.typedef.internal.A
 import org.apache.ignite.stream.kafka.KafkaStreamer
 import org.apache.kafka.clients.consumer.ConsumerConfig
-
 import org.apache.kafka.common.serialization.StringDeserializer
 import java.util.*
 import java.util.concurrent.TimeoutException
@@ -20,8 +19,7 @@ fun main() {
 /**
  * Consumes Kafka stream via Ignite.
  *
- * @param topic Topic name.
- * @param keyValMap Expected key value map.
+ * @param mytopic Topic name.
  * @throws TimeoutException If timed out.
  * @throws InterruptedException If interrupted.
  */
@@ -33,49 +31,46 @@ private fun consumerStream(topic: String) {
     // Get the cache.
     ignite.getOrCreateCache<String, String>(DEFAULT_CACHE_NAME)
 
-    try {
-        ignite.dataStreamer<String, String>(DEFAULT_CACHE_NAME).use { stmr ->
-            stmr.allowOverwrite(true)
-            stmr.autoFlushFrequency(1)
 
-            // Configure Kafka streamer.
-            kafkaStmr = KafkaStreamer()
+    val stmr = ignite.dataStreamer<String, String>(DEFAULT_CACHE_NAME)
+    stmr.allowOverwrite(true)
+    stmr.autoFlushFrequency(1)
 
-            // Set Ignite instance.
-            kafkaStmr?.setIgnite(ignite)
+    // Configure Kafka streamer.
+    kafkaStmr = KafkaStreamer()
 
-            // Set data streamer instance.
-            kafkaStmr?.setStreamer(stmr)
+    // Set Ignite instance.
+    kafkaStmr.setIgnite(ignite)
 
-            // Set the topic.
-            kafkaStmr?.setTopic(Arrays.asList(topic))
+    // Set data streamer instance.
+    kafkaStmr.setStreamer(stmr)
 
-            // Set the number of threads.
-            kafkaStmr?.setThreads(1)
+    // Set the topic.
+    kafkaStmr.setTopic(Arrays.asList(topic))
 
-            // Set the consumer configuration.
-            kafkaStmr?.setConsumerConfig(
-                    createDefaultConsumerConfig("localhost:9092", "groupX"))
-            kafkaStmr?.setMultipleTupleExtractor { record ->
-                var entries: HashMap<String?, String?> = HashMap()
-                try {
-                    val key = UUID.randomUUID().toString()
-                    val value = record.value() as String
-                    entries[key] = value
-                } catch (ex: Exception) {
-                    ex.printStackTrace()
-                }
-                entries
-            }
+    // Set the number of threads.
+    kafkaStmr.setThreads(1)
 
-            // Start kafka streamer.
-            kafkaStmr?.start()
-
+    // Set the consumer configuration.
+    kafkaStmr.setConsumerConfig(
+            createDefaultConsumerConfig("localhost:9092", "groupX"))
+    kafkaStmr.setMultipleTupleExtractor { record ->
+        val entries: HashMap<String?, String?> = HashMap()
+        try {
+            val key = UUID.randomUUID().toString()
+            val value = record.value() as String
+            entries[key] = value
+        } catch (ex: Exception) {
+            ex.printStackTrace()
         }
-    } catch (e: Exception) {
-        e.printStackTrace()
+        entries
     }
+
+    // Start kafka streamer.
+    kafkaStmr.start()
+
 }
+
 
 /**
  * Creates default consumer config.
